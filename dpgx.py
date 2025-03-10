@@ -41,7 +41,7 @@ import importlib
 #
 ########################################################################################################################
 ########################################################################################################################
-# New functions
+# New / Updated methods
 ########################################################################################################################
 
 '''
@@ -58,9 +58,7 @@ SOURCE_REG  = dict()
 
 def add_component(module_name : str, class_name : str, tag : Union[int, str] = None, parent : Union[int, str] = None , source : Union[int, str] = None, *args, **kwargs):
     '''
-        2) Configure class using **kwargs
-        3) Add to registry : components ,alias, source 
-        4) Render
+		Create and register new components
 
     '''
     def create_instance(module_name, class_name, *args, **kwargs):
