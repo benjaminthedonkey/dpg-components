@@ -1,18 +1,30 @@
-import dearpygui.dearpygui as dpg
+import dpgx
+from components import DateTimePickerComp
 
 def save_callback():
     print("Save Clicked")
 
-dpg.create_context()
-dpg.create_viewport()
-dpg.setup_dearpygui()
+dpgx.create_context()
+dpgx.create_viewport()
+dpgx.setup_dearpygui()
 
-with dpg.window(label="Example Window"):
-    dpg.add_text("Hello world")
-    dpg.add_button(label="Save", callback=save_callback)
-    dpg.add_input_text(label="string")
-    dpg.add_slider_float(label="float")
 
-dpg.show_viewport()
-dpg.start_dearpygui()
-dpg.destroy_context()
+def _on_demo_close(sender, app_data, user_data):
+    for i in range(1,10):
+        dpgx.delete_item(f'date_picker_{i}')
+
+    dpgx.delete_item(sender)
+
+    
+with dpgx.window(label="Example Window", on_close=lambda s: dpgx.delete_item(s), width=800, height=800, pos=(100,100) ) as w:
+    
+    with dpgx.tree_node(label="Date time picker"):
+        for i in range(1,10):
+            dpgx.add_component('components','DateTimePickerComp',tag=f'date_picker_{i}')
+
+
+
+
+dpgx.show_viewport()
+dpgx.start_dearpygui()
+dpgx.destroy_context()
