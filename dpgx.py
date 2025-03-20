@@ -46,10 +46,10 @@ import importlib
 
 '''
 COM REGISTRY:
-    COMP_ID(int,str) , (REF_CLASS, SOURCE_ID)
+    COMP_ID(int,str) = {'comp_ref':CLASS_REF, 'source_id':ID}
 
 SOURCE REGISTRY:
-    SOURCE_ID(int,str), (VALUE, [COMP_ID..]) 
+    SOURCE_ID(int,str) = {'value':Any, 'comps':[ID..]}
 
 '''
 # TODO Thread safe struct ?
@@ -80,7 +80,7 @@ def add_component(module_name : str, class_name : str, tag : Union[int, str] = N
             return instance
         except (ImportError, AttributeError, TypeError) as e:
             print(f"Error creating instance: {e}")
-            return None
+            raise e
 
 
     #_parent = parent if parent else dpg.last_item()

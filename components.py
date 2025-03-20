@@ -4,12 +4,12 @@ import dearpygui.dearpygui as dpg
 import dpgx
 from datetime import date , datetime
 
-class DPGComponent(ABC):
+class dpgxComponent(ABC):
 
     def __init__(self, tag: Union[int, str] = 0, parent: Union[int, str] = 0):
         
         self._parent    = parent
-        self._tag       = tag if tag else dpg.generate_uuid()
+        self._tag       = tag if tag else dpgx.generate_uuid()
 
 
     @abstractmethod
@@ -47,25 +47,25 @@ class DPGComponent(ABC):
 #  Components
 ################################################################
 
-class DateTimePickerComp(DPGComponent):
+class DatePickerComp(dpgxComponent):
     '''
-        The Date time Picker will be created using two widgets: a text box to to show the current value and date picker on a modal window
+        The Date Picker will be created using two widgets: a text box to to show the current value and date picker on a modal window
     '''
 
     def __init__(self, tag = 0, parent = 0):
         
         super().__init__(tag, parent)
 
-        self._group_tag                 = dpg.generate_uuid()
-        self._text_box_tag              = dpg.generate_uuid()
-        self._date_picker_window_tag    = dpg.generate_uuid()
-        self._date_picker               = dpg.generate_uuid()
+        self._group_tag                 = dpgx.generate_uuid()
+        self._text_box_tag              = dpgx.generate_uuid()
+        self._date_picker_window_tag    = dpgx.generate_uuid()
+        self._date_picker               = dpgx.generate_uuid()
 
         self.show()
    
     def delete(self, children_only: bool =False, **kwargs):
-        if dpg.does_item_exist(self._group_tag):
-            dpg.delete_item(self._group_tag, children_only=children_only, **kwargs)
+        if dpgx.does_item_exist(self._group_tag):
+            dpgx.delete_item(self._group_tag, children_only=children_only, **kwargs)
 
     def configure_item(self, **kwargs):
         if 'default_value' in kwargs:
@@ -75,13 +75,13 @@ class DateTimePickerComp(DPGComponent):
         return dpgx.get_value(self._tag)
 
     def set_value(self, value:any):
-        if dpg.does_item_exist(self._text_box_tag):
-            dpg.set_value(self._text_box_tag,  value.strftime("%Y-%m-%d"))
-        if dpg.does_item_exist(self._date_picker):
-            dpg.set_value(self._date_picker, {'month_day': value.day, 'year':value.year-1900, 'month':value.month-1})
+        if dpgx.does_item_exist(self._text_box_tag):
+            dpgx.set_value(self._text_box_tag,  value.strftime("%Y-%m-%d"))
+        if dpgx.does_item_exist(self._date_picker):
+            dpgx.set_value(self._date_picker, {'month_day': value.day, 'year':value.year-1900, 'month':value.month-1})
 
     def show_date_picker(self, sender, app_data, user_data):
-        dpg.configure_item(self._date_picker_window_tag, show=True)
+        dpgx.configure_item(self._date_picker_window_tag, show=True)
     
     def on_value_selected(self, sender, app_data, user_data):
         
@@ -89,46 +89,46 @@ class DateTimePickerComp(DPGComponent):
             value  = date(int(app_data['year']+1900), int(app_data['month']+1), int(app_data['month_day']))
             dpgx.set_value(self._tag, value)
 
-        dpg.configure_item(self._date_picker_window_tag, show=False)
+        dpgx.configure_item(self._date_picker_window_tag, show=False)
 
     def show(self):
         '''
            This component is a text box and and date picker
         '''
 
-        if not dpg.does_item_exist(self._group_tag):
+        if not dpgx.does_item_exist(self._group_tag):
         
             # Create a group at the root level
-            with dpg.group(tag=self._group_tag, horizontal=True):
+            with dpgx.group(tag=self._group_tag, horizontal=True):
                 
-                with dpg.window(label='Pick Date', modal=True, show=False, no_title_bar=False, tag=self._date_picker_window_tag):
-                    dpg.add_date_picker(level=dpg.mvDatePickerLevel_Day, tag=self._date_picker,
+                with dpgx.window(label='Pick Date', modal=True, show=False, no_title_bar=False, tag=self._date_picker_window_tag):
+                    dpgx.add_date_picker(level=dpg.mvDatePickerLevel_Day, tag=self._date_picker,
                                         default_value={'month_day': 8, 'year':93, 'month':5}, callback=self.on_value_selected)
             
-                dpg.add_input_text(tag = self._text_box_tag, enabled = False, width=80)
-                dpg.add_button(label='+', callback=self.show_date_picker)
+                dpgx.add_input_text(tag = self._text_box_tag, enabled = False, width=80)
+                dpgx.add_button(label='+', callback=self.show_date_picker)
 
             if self._parent:
                 pass
                 # TODO move item to parent node
                 
-class TextBoxComp(DPGComponent):
+class TextBoxComp(dpgxComponent):
     '''
-        A wrapper for DPG TextBox 
+        A wrapper for dpgx TextBox 
     '''                    
     def __init__(self, tag = 0, parent = 0):
         
         super().__init__(tag, parent)
 
-        self._group_tag                 = dpg.generate_uuid()
-        self._text_box_tag              = dpg.generate_uuid()
+        self._group_tag                 = dpgx.generate_uuid()
+        self._text_box_tag              = dpgx.generate_uuid()
       
         self.show()
       
 
     def delete(self, children_only: bool =False, **kwargs):
-        if dpg.does_item_exist(self._group_tag):
-            dpg.delete_item(self._group_tag, children_only=children_only, **kwargs)
+        if dpgx.does_item_exist(self._group_tag):
+            dpgx.delete_item(self._group_tag, children_only=children_only, **kwargs)
 
     def configure_item(self, **kwargs):
         pass
@@ -137,40 +137,40 @@ class TextBoxComp(DPGComponent):
         return dpgx.get_value(self._tag)
 
     def set_value(self, value:any):
-        if dpg.does_item_exist(self._text_box_tag):
-            dpg.set_value(self._text_box_tag,  value)
+        if dpgx.does_item_exist(self._text_box_tag):
+            dpgx.set_value(self._text_box_tag,  value)
 
     def show(self):
         '''
            This component is a text box 
         '''
 
-        if not dpg.does_item_exist(self._group_tag):
+        if not dpgx.does_item_exist(self._group_tag):
         
             # Create a group at the root level
-            with dpg.group(tag=self._group_tag):
-                dpg.add_input_text(tag=self._text_box_tag, width=120)
+            with dpgx.group(tag=self._group_tag):
+                dpgx.add_input_text(tag=self._text_box_tag, width=120)
 
             if self._parent:
                 pass
                 # TODO move item to parent node
 
 
-class DataGridComp(DPGComponent):
+class DataGridComp(dpgxComponent):
     '''
         A Data Grid Component. The value is a Pandas Data Frame.
     '''                    
     def __init__(self, tag = 0, parent = 0):
         
         super().__init__(tag, parent)
-        self._group_tag                 = dpg.generate_uuid()
-        self._table_tag                 = dpg.generate_uuid()
+        self._group_tag                 = dpgx.generate_uuid()
+        self._table_tag                 = dpgx.generate_uuid()
         self.show()
       
 
     def delete(self, children_only: bool =False, **kwargs):
-        if dpg.does_item_exist(self._group_tag):
-            dpg.delete_item(self._group_tag, children_only=children_only, **kwargs)
+        if dpgx.does_item_exist(self._group_tag):
+            dpgx.delete_item(self._group_tag, children_only=children_only, **kwargs)
 
     def configure_item(self, **kwargs):
         pass
@@ -179,11 +179,12 @@ class DataGridComp(DPGComponent):
         return dpgx.get_value(self._tag)
 
     def set_value(self, value:any):
-        if dpg.does_item_exist(self._group_tag):
+        if dpgx.does_item_exist(self._group_tag):
+            if dpgx.does_item_exist(self._table_tag):
+                pass
             #  TODO
             #  1) Delete current rows fom table 
             #  2) Add new rows to table
-            pass
 
 
     def show(self):
@@ -191,12 +192,23 @@ class DataGridComp(DPGComponent):
            Use the table API to render the Data Grid.
         '''
 
-        if not dpg.does_item_exist(self._group_tag):
+        if not dpgx.does_item_exist(self._group_tag):
         
             # Create a group at the root level
-            with dpg.group(tag=self._group_tag):
-                dpg.add_table(tag=self._table_tag)
-                
+            with dpgx.group(tag=self._group_tag):
+
+                with dpgx.table(tag=self._table_tag, header_row=False, borders_innerH=True, 
+                               borders_outerH=True, borders_innerV=True, borders_outerV=True):
+                    
+                    _data = dpgx.get_value(self._tag)
+                    if _data:
+                        for c in _data.columns():
+                            dpgx.add_table_column(c)
+                            
+                            #with dpgx.table_row():
+                            #    dpgx.add_button(label="Button 1")
+                            #    dpgx.add_button(label="Button 2")
+                            #    dpgx.add_button(label="Button 3")
 
             if self._parent:
                 pass
