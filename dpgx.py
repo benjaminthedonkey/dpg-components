@@ -49,7 +49,7 @@ COM REGISTRY:
     COMP_ID(int,str) , (REF_CLASS, SOURCE_ID)
 
 SOURCE REGISTRY:
-    SOURCE_ID(int,str), VALUE
+    SOURCE_ID(int,str), (VALUE, [COMP_ID..]) 
 
 '''
 # TODO Thread safe struct ?
@@ -59,7 +59,6 @@ SOURCE_REG  = dict()
 def add_component(module_name : str, class_name : str, tag : Union[int, str] = None, parent : Union[int, str] = None , source : Union[int, str] = None, *args, **kwargs):
     '''
 		Create and register new components
-
     '''
     def create_instance(module_name, class_name, *args, **kwargs):
         """
@@ -83,7 +82,7 @@ def add_component(module_name : str, class_name : str, tag : Union[int, str] = N
             print(f"Error creating instance: {e}")
             return None
 
-    
+
     #_parent = parent if parent else dpg.last_item()
     _parent = parent
     _item =  tag if tag else dpg.generate_uuid()
@@ -92,14 +91,17 @@ def add_component(module_name : str, class_name : str, tag : Union[int, str] = N
     
     # Create component
     _component = create_instance(module_name, class_name,  _item,  _parent)
-    #assert issubclass(type(_component),type(DPGComponent)), 'Component should to be subclass of DPGComponent'
 
     # Add to COM_REG
-    COM_REG[_item] = (_component, _source)
+    COM_REG[_item] = {'comp_ref':_component, 'source_id':_source}
 
     # Add to SOURCE REF
-    SOURCE_REG[_source] = None  # default value ?
-
+    if _source not in SOURCE_REG.keys():
+      SOURCE_REG[_source] = {'value':None, 'comps':[_item]}
+    else:
+      SOURCE_REG[_source]['comps'].append(_item)
+      _component.set_value(SOURCE_REG[_source]['value'])
+	
     return _item
 
 def _is_component(item : Union[int, str]) -> bool:    
@@ -118,7 +120,7 @@ def get_value(item : Union[int, str], **kwargs) -> Any:
 		Any
 	"""
 
-	return SOURCE_REG[COM_REG[item][1]] if _is_component(item) else dpg.get_value(item,**kwargs)
+	return SOURCE_REG[COM_REG[item]['source_id']]['value'] if _is_component(item) else dpg.get_value(item,**kwargs)
     
 
 def set_value(item : Union[int, str], value : Any, **kwargs) -> None:
@@ -131,7 +133,9 @@ def set_value(item : Union[int, str], value : Any, **kwargs) -> None:
 		None
 	"""
 	if _is_component(item):
-		SOURCE_REG[COM_REG[item][1]] = value
+		SOURCE_REG[COM_REG[item]['source_id']]['value'] = value
+		for id in SOURCE_REG[COM_REG[item]['source_id']]['comps']:
+			COM_REG[id]['comp_ref'].set_value(value)
 	else:
 		dpg.set_value(item, value, **kwargs)
 
@@ -147,8 +151,9 @@ def delete_item(item : Union[int, str], *, children_only: bool =False, slot: int
 	"""
 
 	if _is_component(item):
-		COM_REG[item][1].delete(children_only, **kwargs)
-		del SOURCE_REG[COM_REG[item][1]]
+		COM_REG[item]['comp_ref'].delete(children_only, **kwargs)
+		if COM_REG[item]['source_id'] in SOURCE_REG:
+			del SOURCE_REG[COM_REG[item]['source_id']]
 		del COM_REG[item]
 	else:
 		dpg.delete_item(item, children_only=children_only, slot=slot, **kwargs)
@@ -190,7 +195,11 @@ def get_dearpygui_version():
 
 def configure_item(item : Union[int, str], **kwargs) -> None:
 	"""Configures an item after creation."""
-	dpg.configure_item(item, **kwargs)
+
+	if _is_component(item):
+		COM_REG[item]['comp_ref'].configure_item(**kwargs)
+	else:
+		dpg.configure_item(item, **kwargs)
 
 def configure_app(**kwargs) -> None:
 	"""Configures an item after creation."""
@@ -5370,6 +5379,10 @@ def add_input_text(*, label: str =None, user_data: Any =None, use_internal_label
 	Returns:
 		Union[int, str]
 	"""
+
+	if 'source' in kwargs.keys() and _is_component(kwargs['source']):
+
+		del kwargs['source']
 
 	if 'id' in kwargs.keys():
 		warnings.warn('id keyword renamed to tag', DeprecationWarning, 2)
