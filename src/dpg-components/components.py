@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import List, Any, Callable, Union, Tuple
 import dearpygui.dearpygui as dpg
-import dpgx as dpgx
+import dpg_components as dpgx
 from datetime import date , datetime
 
-class dpgxComponent(ABC):
+class DPGComponent(ABC):
 
     def __init__(self, tag: Union[int, str] = 0, parent: Union[int, str] = 0):
         
@@ -47,7 +47,7 @@ class dpgxComponent(ABC):
 #  Components
 ################################################################
 
-class DatePickerComp(dpgxComponent):
+class DatePickerComp(DPGComponent):
     '''
         The Date Picker will be created using two widgets: a text box to to show the current value and date 
         picker on a modal window
@@ -113,7 +113,7 @@ class DatePickerComp(dpgxComponent):
                 pass
                 # TODO move item to parent node
                 
-class TextBoxComp(dpgxComponent):
+class TextBoxComp(DPGComponent):
     '''
         A wrapper for dpgx TextBox 
     '''                    
@@ -156,7 +156,7 @@ class TextBoxComp(dpgxComponent):
                 pass
                 # TODO move item to parent node
 
-class DataGridComp(dpgxComponent):
+class DataGridComp(DPGComponent):
     '''
         A Data Grid Component. The value is a Pandas Data Frame.
     '''                    

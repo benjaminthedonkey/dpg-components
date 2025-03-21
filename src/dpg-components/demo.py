@@ -1,6 +1,6 @@
 from datetime import datetime
 import pandas as pd
-import dpgx as dpgx
+import dpg_components as dpgx
 
 dpgx.create_context()
 dpgx.create_viewport()
