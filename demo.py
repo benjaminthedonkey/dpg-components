@@ -13,9 +13,9 @@ dpgx.setup_dearpygui()
 
 
 def _on_demo_close(sender, app_data, user_data):
-    for i in range(1,10):
-        dpgx.delete_item(f'date_picker_{i}')
-
+    
+    dpgx.delete_item('date_picker_1')
+    dpgx.delete_item('text_box_1')
     dpgx.delete_item(sender)
 
     
@@ -24,16 +24,19 @@ with dpgx.window(label="Example Window", on_close=_on_demo_close, width=800,
     
     with dpgx.tree_node(label="Date picker"):
 
-        for i in range(1,5):
-            dpgx.add_component('components','DatePickerComp',tag=f'date_picker_{i}')
-            dpgx.configure_item(f'date_picker_{i}', default_value = datetime.now().date() )
+        dpgx.add_component('components','DatePickerComp',tag=f'date_picker_1')
+
+        # Set default date to today
+        dpgx.configure_item(f'date_picker_1', default_value = datetime.now().date() )
     
-        for i in range(1,5):
-            dpgx.add_component('components','TextBoxComp',tag=f'text_box{i}', source=f'date_picker_{i}')
+        # Add another component with the same source as Date picker
+        dpgx.add_component('components','TextBoxComp',tag='text_box_1', source='date_picker_1')
     
+
     with dpgx.tree_node(label="Data Grid"):
 
-        dpgx.add_component('components','DataGridComp',tag=f'date_grid_1')
+        # Add Data Grid component
+        dpgx.add_component('components','DataGridComp',tag=f'data_grid_1')
         
         data = {
             'Name': ['Alice', 'Bob', 'Charlie'],
@@ -42,7 +45,8 @@ with dpgx.window(label="Example Window", on_close=_on_demo_close, width=800,
         }
         df = pd.DataFrame(data)
         
-        dpgx.set_value(f'date_grid_1', value = data)
+        # Set data grid value
+        dpgx.set_value(f'data_grid_1', value = df)
 
 
 dpgx.show_viewport()

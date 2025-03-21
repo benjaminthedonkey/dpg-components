@@ -179,36 +179,37 @@ class DataGridComp(dpgxComponent):
         return dpgx.get_value(self._tag)
 
     def set_value(self, value:any):
-        if dpgx.does_item_exist(self._group_tag):
-            if dpgx.does_item_exist(self._table_tag):
-                pass
-            #  TODO
-            #  1) Delete current rows fom table 
-            #  2) Add new rows to table
-
+        self.delete()
+        self.show()   
 
     def show(self):
         '''
            Use the table API to render the Data Grid.
         '''
 
+        def _delete_table():
+            if dpgx.does_item_exist(self._table_tag):
+                dpg.delete_item(self._table_tag)
+
         if not dpgx.does_item_exist(self._group_tag):
+
+            _delete_table()
         
             # Create a group at the root level
             with dpgx.group(tag=self._group_tag):
 
-                with dpgx.table(tag=self._table_tag, header_row=False, borders_innerH=True, 
+                with dpgx.table(tag=self._table_tag, header_row=True, borders_innerH=True, 
                                borders_outerH=True, borders_innerV=True, borders_outerV=True):
                     
                     _data = dpgx.get_value(self._tag)
-                    if _data:
-                        for c in _data.columns():
-                            dpgx.add_table_column(c)
-                            
-                            #with dpgx.table_row():
-                            #    dpgx.add_button(label="Button 1")
-                            #    dpgx.add_button(label="Button 2")
-                            #    dpgx.add_button(label="Button 3")
+                    if _data is not None and not _data.empty:
+                        for c in _data.columns:
+                            dpgx.add_table_column(label=c)
+                        for index, row in _data.iterrows():
+                            with dpgx.table_row():
+                                for c in _data.columns:                                      
+                                    with dpgx.table_cell():
+                                        dpgx.add_text(default_value=row[c])
 
             if self._parent:
                 pass
