@@ -15,7 +15,7 @@ class dpgxComponent(ABC):
     @abstractmethod
     def configure_item(self, **kwargs):
         '''
-            Configure item. Implement the keys that make sence for this component
+            Configure item. Implement the keys that make sense for this component
         '''
 
     @abstractmethod
@@ -49,7 +49,8 @@ class dpgxComponent(ABC):
 
 class DatePickerComp(dpgxComponent):
     '''
-        The Date Picker will be created using two widgets: a text box to to show the current value and date picker on a modal window
+        The Date Picker will be created using two widgets: a text box to to show the current value and date 
+        picker on a modal window
     '''
 
     def __init__(self, tag = 0, parent = 0):
