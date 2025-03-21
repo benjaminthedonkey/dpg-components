@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Any, Callable, Union, Tuple
 import dearpygui.dearpygui as dpg
-import dpgx
+import src.dpg_components.dpgx as dpgx
 from datetime import date , datetime
 
 class dpgxComponent(ABC):
@@ -154,7 +154,6 @@ class TextBoxComp(dpgxComponent):
             if self._parent:
                 pass
                 # TODO move item to parent node
-
 
 class DataGridComp(dpgxComponent):
     '''

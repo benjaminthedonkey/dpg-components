@@ -1,7 +1,7 @@
 from datetime import date , datetime
 import pandas as pd
-import dpgx
-from components import DatePickerComp
+import src.dpg_components.dpgx as dpgx
+from src.dpg_components.components import DatePickerComp
 
 
 def save_callback():
