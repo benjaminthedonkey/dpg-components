@@ -4,6 +4,9 @@ version = "0.0.1"
 authors = [
   { name="Smith", email="winston.doublethink@gmail.com" },
 ]
+dependencies = [
+    "dearpygui >= 2.0.0"
+]
 description = "Components for DPG"
 readme = "README.md"
 requires-python = ">=3.8"
