@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Any, Callable, Union, Tuple
 import dearpygui.dearpygui as dpg
-import src.dpg_components.dpgx as dpgx
+import dpgx as dpgx
 from datetime import date , datetime
 
 class dpgxComponent(ABC):

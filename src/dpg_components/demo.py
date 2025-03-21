@@ -1,11 +1,6 @@
-from datetime import date , datetime
+from datetime import datetime
 import pandas as pd
-import src.dpg_components.dpgx as dpgx
-from src.dpg_components.components import DatePickerComp
-
-
-def save_callback():
-    print("Save Clicked")
+import dpgx as dpgx
 
 dpgx.create_context()
 dpgx.create_viewport()
