@@ -159,6 +159,18 @@ def delete_item(item : Union[int, str], *, children_only: bool =False, slot: int
 		dpg.delete_item(item, children_only=children_only, slot=slot, **kwargs)
 
 
+def get_item_configuration(item : Union[int, str], **kwargs) -> dict:
+	"""	 Returns an item's configuration.
+
+	Args:
+		item (Union[int, str]): 
+	Returns:
+		dict
+	"""
+	if _is_component(item):
+		return COM_REG[item]['comp_ref'].get_item_configuration(**kwargs)
+	else:
+		return dpg.get_item_configuration(item, **kwargs)
 
 
 ########################################################################################################################
@@ -8803,16 +8815,7 @@ def get_item_alias(item : Union[int, str], **kwargs) -> str:
 
 	return dpg.get_item_alias(item, **kwargs)
 
-def get_item_configuration(item : Union[int, str], **kwargs) -> dict:
-	"""	 Returns an item's configuration.
 
-	Args:
-		item (Union[int, str]): 
-	Returns:
-		dict
-	"""
-
-	return dpg.get_item_configuration(item, **kwargs)
 
 def get_item_info(item : Union[int, str], **kwargs) -> dict:
 	"""	 Returns an item's information.

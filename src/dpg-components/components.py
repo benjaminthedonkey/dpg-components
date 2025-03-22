@@ -6,11 +6,19 @@ from datetime import date , datetime
 
 class DPGComponent(ABC):
 
-    def __init__(self, tag: Union[int, str] = 0, parent: Union[int, str] = 0):
+    def __init__(self, tag: Union[int, str] = 0, parent: Union[int, str] = 0 , show : bool = True):
         
         self._parent    = parent
-        self._tag       = tag if tag else dpgx.generate_uuid()
+        self._tag       = tag if tag else dpgx.generate_uuid() 
+        self._configuration = {'show':show}
 
+    
+    def get_item_configuration(self, **kwargs):
+        '''
+            Returns the item configuration
+        '''
+        return self._configuration
+        
 
     @abstractmethod
     def configure_item(self, **kwargs):
@@ -67,10 +75,14 @@ class DatePickerComp(DPGComponent):
     def delete(self, children_only: bool =False, **kwargs):
         if dpgx.does_item_exist(self._group_tag):
             dpgx.delete_item(self._group_tag, children_only=children_only, **kwargs)
+        if dpgx.does_item_exist(self._date_picker_window_tag):
+            dpgx.delete_item(self._date_picker_window_tag, children_only=children_only, **kwargs)
 
     def configure_item(self, **kwargs):
         if 'default_value' in kwargs:
             dpgx.set_value(self._tag, kwargs['default_value'])
+        if 'show' in  kwargs:
+            dpgx.configure_item(self._group_tag, show=kwargs['show'])
 
     def get_value(self):
         return dpgx.get_value(self._tag)
@@ -97,10 +109,10 @@ class DatePickerComp(DPGComponent):
            This component is a text box and and date picker
         '''
 
-        if not dpgx.does_item_exist(self._group_tag):
+        if not dpgx.does_item_exist(self._group_tag) and self._configuration['show']:
         
             # Create a group at the root level
-            with dpgx.group(tag=self._group_tag, horizontal=True):
+            with dpgx.group(tag=self._group_tag, horizontal=True, show=self._configuration['show']):
                 
                 with dpgx.window(label='Pick Date', modal=True, show=False, no_title_bar=False, tag=self._date_picker_window_tag):
                     dpgx.add_date_picker(level=dpg.mvDatePickerLevel_Day, tag=self._date_picker,
@@ -110,8 +122,7 @@ class DatePickerComp(DPGComponent):
                 dpgx.add_button(label='+', callback=self.show_date_picker)
 
             if self._parent:
-                pass
-                # TODO move item to parent node
+                dpgx.move_item(self._group_tag, parent=self._parent)
                 
 class TextBoxComp(DPGComponent):
     '''
@@ -132,7 +143,8 @@ class TextBoxComp(DPGComponent):
             dpgx.delete_item(self._group_tag, children_only=children_only, **kwargs)
 
     def configure_item(self, **kwargs):
-        pass
+        if 'show' in  kwargs:
+            dpgx.configure_item(self._group_tag, show=kwargs['show'])
 
     def get_value(self):
         return dpgx.get_value(self._tag)
@@ -149,12 +161,11 @@ class TextBoxComp(DPGComponent):
         if not dpgx.does_item_exist(self._group_tag):
         
             # Create a group at the root level
-            with dpgx.group(tag=self._group_tag):
+            with dpgx.group(tag=self._group_tag, show=self._configuration['show']):
                 dpgx.add_input_text(tag=self._text_box_tag, width=120)
 
             if self._parent:
-                pass
-                # TODO move item to parent node
+                dpgx.move_item(self._group_tag, parent=self._parent)
 
 class DataGridComp(DPGComponent):
     '''
@@ -163,6 +174,7 @@ class DataGridComp(DPGComponent):
     def __init__(self, tag = 0, parent = 0):
         
         super().__init__(tag, parent)
+
         self._group_tag                 = dpgx.generate_uuid()
         self._table_tag                 = dpgx.generate_uuid()
         self.show()
@@ -173,7 +185,8 @@ class DataGridComp(DPGComponent):
             dpgx.delete_item(self._group_tag, children_only=children_only, **kwargs)
 
     def configure_item(self, **kwargs):
-        pass
+        if 'show' in  kwargs:
+            dpgx.configure_item(self._group_tag, show=kwargs['show'])
 
     def get_value(self):
         return dpgx.get_value(self._tag)
@@ -196,7 +209,7 @@ class DataGridComp(DPGComponent):
             _delete_table()
         
             # Create a group at the root level
-            with dpgx.group(tag=self._group_tag):
+            with dpgx.group(tag=self._group_tag, show=self._configuration['show']):
 
                 with dpgx.table(tag=self._table_tag, header_row=True, borders_innerH=True, 
                                borders_outerH=True, borders_innerV=True, borders_outerV=True):
@@ -212,5 +225,4 @@ class DataGridComp(DPGComponent):
                                         dpgx.add_text(default_value=row[c])
 
             if self._parent:
-                pass
-                # TODO move item to parent node
+                dpgx.move_item(self._group_tag, parent=self._parent)

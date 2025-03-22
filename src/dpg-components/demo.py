@@ -27,7 +27,6 @@ with dpgx.window(label="Example Window", on_close=_on_demo_close, width=800,
         # Add another component with the same source as Date picker
         dpgx.add_component('components','TextBoxComp',tag='text_box_1', source='date_picker_1')
     
-
     with dpgx.tree_node(label="Data Grid"):
 
         # Add Data Grid component
@@ -41,8 +40,13 @@ with dpgx.window(label="Example Window", on_close=_on_demo_close, width=800,
         df = pd.DataFrame(data)
         
         # Set data grid value
-        dpgx.set_value(f'data_grid_1', value = df)
+        dpgx.set_value('data_grid_1', value = df)
 
+        # get component config
+        config = dpgx.get_item_configuration('data_grid_1')
+        print(config)
+
+dpgx.show_item_registry()
 
 dpgx.show_viewport()
 dpgx.start_dearpygui()
