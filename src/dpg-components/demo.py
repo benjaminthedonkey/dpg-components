@@ -12,8 +12,7 @@ def _on_demo_close(sender, app_data, user_data):
     dpg.delete_item('text_box_1')
     dpg.delete_item(sender)
 
-
-with dpg.window(label="Example Window", on_close=_on_demo_close, width=800, 
+with dpg.window(label="Example Components Window", on_close=_on_demo_close, width=800, 
                  height=800, pos=(100,100) ) as w:
     
     with dpg.tree_node(label="Date picker"):
@@ -22,6 +21,8 @@ with dpg.window(label="Example Window", on_close=_on_demo_close, width=800,
 
         # Set default date to today
         dpg.configure_item(f'date_picker_1', default_value = datetime.now().date())
+
+        dpg.add_text("Add another component with the same source as DatePicker")
     
         # Add another component with the same source as Date picker
         dpg.add_component('dpg_components','TextBoxComp',tag='text_box_1', source='date_picker_1')
@@ -44,6 +45,7 @@ with dpg.window(label="Example Window", on_close=_on_demo_close, width=800,
         # get component config
         config = dpg.get_item_configuration('data_grid_1')
 
+# show dpg registry
 dpg.show_item_registry()
 
 dpg.show_viewport()

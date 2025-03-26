@@ -8,8 +8,11 @@ The goal of this project is to test a few ideas on how to bring Components to De
  - Components can contain other Components or regular Widgets.
  - Although Components are required to implements a contract (DPGComponent), reusability is achieved through composition.
 
+### How it works ?
+Simply import module dpg_components. It will be add function "add_component" to the DearPyGui module.
 
-Examples under demo.py:
+```python 
+import dpg_components
+import dearpygui.dearpygui as dpg
+```
 
-- Date Picker
-- Data Grid
