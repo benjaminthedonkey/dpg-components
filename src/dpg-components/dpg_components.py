@@ -140,6 +140,7 @@ def configure_item(item : Union[int, str], **kwargs) -> None:
 		internal_dpg.configure_item(item, **kwargs)
 
 
+# Update global module 
 dpg.add_component = add_component
 dpg.get_value = get_value
 dpg.set_value = set_value
