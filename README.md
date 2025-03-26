@@ -18,7 +18,7 @@ import dearpygui.dearpygui as dpg
 
 ### How to create and use a new Component ?
 
-First implement abstract class "DPGComponent",  then you can use your new component as follows:   
+First, create a new class and implement abstract class "DPGComponent". Then you can use your new component as follows:   
 ```python 
   dpg.add_component('my_components_module','MyNewComponent',tag=f'com_1')
 ```
