@@ -1,7 +1,8 @@
 from datetime import datetime
 import pandas as pd
-import dearpygui.dearpygui as dpg
 import dpg_components
+import dearpygui.dearpygui as dpg
+
 
 dpg.create_context()
 dpg.create_viewport()

@@ -5,7 +5,8 @@ authors = [
   { name="Smith", email="winston.doublethink@gmail.com" },
 ]
 dependencies = [
-    "dearpygui >= 2.0.0"
+    "dearpygui >= 2.0.0",
+    "pandas >= 2.2.3"
 ]
 description = "Components for DPG"
 readme = "README.md"
