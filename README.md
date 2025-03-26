@@ -6,7 +6,7 @@ The goal of this project is to bring Components to [DearPyGui](https://github.co
 
  - Components should be first class citizens, i.e. use the same API as regular Items.
  - Components can contain other Components or regular Items.
- - Although Components are required to implement a contract (DPGComponent abstract class), reusability is achieved through composition.
+ - Reusability is achieved through composition.
 
 ### How it works ?
 Import module dpg_components before you import [DearPyGui](https://github.com/hoffstadt/DearPyGui). 
