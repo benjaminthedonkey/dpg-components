@@ -4,6 +4,7 @@ import dearpygui.dearpygui as dpg
 import dearpygui._dearpygui as internal_dpg
 from abc import ABC, abstractmethod
 from datetime import date
+import os
 
 '''
 COM REGISTRY:
@@ -149,7 +150,6 @@ dpg.get_item_configuration = get_item_configuration
 dpg.configure_item = configure_item
 
 
-
 class DPGComponent(ABC):
 
     def __init__(self, tag: Union[int, str] = 0, parent: Union[int, str] = 0 , show : bool = True):
@@ -196,10 +196,16 @@ class DPGComponent(ABC):
             Set the value of the component
         '''
 
+###########################################################################
+# ICONS
+# https://fonts.google.com/icons?icon.size=16&icon.color=%23FFFFFF
+###########################################################################
 
-################################################################
+
+
+###########################################################################
 #  Components
-################################################################
+###########################################################################
 
 class DatePickerComp(DPGComponent):
     '''
@@ -215,6 +221,13 @@ class DatePickerComp(DPGComponent):
         self._text_box_tag              = dpg.generate_uuid()
         self._date_picker_window_tag    = dpg.generate_uuid()
         self._date_picker               = dpg.generate_uuid()
+
+        if  not dpg.does_item_exist('ico_calendar_14'):
+            self.fd_img_path = os.path.join(os.path.dirname(__file__), "images")
+            cawidth, caheight, _, cadata = dpg.load_image(os.path.join(self.fd_img_path, "calendar_month_14dp_FFFFFF_FILL0_wght200_GRAD0_opsz20.png"))
+            self.ico_calendar = [cawidth, caheight, cadata]
+            with dpg.texture_registry():
+                dpg.add_static_texture(width=self.ico_calendar[0], height=self.ico_calendar[1], default_value=self.ico_calendar[2], tag="ico_calendar_14")
 
         self.show()
    
@@ -265,7 +278,7 @@ class DatePickerComp(DPGComponent):
                                         default_value={'month_day': 8, 'year':93, 'month':5}, callback=self.on_value_selected)
             
                 dpg.add_input_text(tag = self._text_box_tag, enabled = False, width=80)
-                dpg.add_button(label='+', callback=self.show_date_picker)
+                dpg.add_image_button('ico_calendar_14', callback=self.show_date_picker)
 
             if self._parent:
                 dpg.move_item(self._group_tag, parent=self._parent)
