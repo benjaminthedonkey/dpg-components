@@ -196,10 +196,6 @@ class DPGComponent(ABC):
             Set the value of the component
         '''
 
-###########################################################################
-# ICONS
-# https://fonts.google.com/icons?icon.size=16&icon.color=%23FFFFFF
-###########################################################################
 
 
 
