@@ -4,6 +4,25 @@ import dearpygui.dearpygui as dpg
 import dearpygui._dearpygui as internal_dpg
 from abc import ABC, abstractmethod
 from datetime import date
+import os
+
+# ICONS
+ICO_CALENDAR    = 'ico_calendar_14'
+ICO_ABC         = 'ico_abc_14'
+ICO_FILE        = {ICO_CALENDAR : 'calendar_month_14dp_FFFFFF_FILL0_wght200_GRAD0_opsz20.png',
+                    ICO_ABC: 'abc_16dp_FFFFFF_FILL0_wght200_GRAD0_opsz20.png'}
+
+def use_icon(icon_name : str):
+     '''
+        Register icons for future user
+     '''
+     if  not dpg.does_item_exist(icon_name):
+        fd_img_path = os.path.join(os.path.dirname(__file__), "images")
+        width, height, _, data = dpg.load_image(os.path.join(fd_img_path, ICO_FILE[icon_name]))
+        ico_ = [width, height, data]
+        with dpg.texture_registry():
+            dpg.add_static_texture(width=ico_[0], height=ico_[1], default_value=ico_[2], tag=icon_name)
+
 
 '''
 COM REGISTRY:
@@ -17,17 +36,16 @@ SOURCE REGISTRY:
 COM_REG     = dict() 
 SOURCE_REG  = dict()
 
-def add_component(module_name : str, class_name : str, tag : Union[int, str] = None, parent : Union[int, str] = None , source : Union[int, str] = None, *args, **kwargs):
+def add_component(cls : any, tag : Union[int, str] = None, parent : Union[int, str] = None , source : Union[int, str] = None, *args, **kwargs):
     '''
 		Create and register new components
     '''
-    def create_instance(module_name, class_name, *args, **kwargs):
+    def create_instance(cls, *args, **kwargs):
         """
-        Creates an instance of a class from its name.
+        Creates an instance of a class from its class.
 
         Args:
-            module_name (str): The name of the module where the class is defined.
-            class_name (str): The name of the class.
+            cls (any): Class
             *args: Positional arguments to pass to the class constructor.
             **kwargs: Keyword arguments to pass to the class constructor.
 
@@ -35,12 +53,10 @@ def add_component(module_name : str, class_name : str, tag : Union[int, str] = N
             An instance of the class, or None if an error occurs.
         """
         try:
-            module = importlib.import_module(module_name)
-            cls = getattr(module, class_name)
             instance = cls(*args, **kwargs)
             return instance
         except (ImportError, AttributeError, TypeError) as e:
-            print(f"Error creating instance: {e}")
+            print(f"Error creating instance of: {cls}")
             raise e
 
 
@@ -51,7 +67,7 @@ def add_component(module_name : str, class_name : str, tag : Union[int, str] = N
     assert _item not in COM_REG , f'Item {_item} already exist'
     
     # Create component
-    _component = create_instance(module_name, class_name,  _item,  _parent)
+    _component = create_instance(cls,  _item,  _parent)
 
     # Add to COM_REG
     COM_REG[_item] = {'comp_ref':_component, 'source_id':_source}
@@ -149,7 +165,6 @@ dpg.get_item_configuration = get_item_configuration
 dpg.configure_item = configure_item
 
 
-
 class DPGComponent(ABC):
 
     def __init__(self, tag: Union[int, str] = 0, parent: Union[int, str] = 0 , show : bool = True):
@@ -158,7 +173,7 @@ class DPGComponent(ABC):
         self._tag       = tag if tag else dpg.generate_uuid() 
         self._configuration = {'show':show}
 
-    
+
     def get_item_configuration(self, **kwargs):
         '''
             Returns the item configuration
@@ -197,9 +212,9 @@ class DPGComponent(ABC):
         '''
 
 
-################################################################
-#  Components
-################################################################
+###########################################################################
+#  Example Components
+###########################################################################
 
 class DatePickerComp(DPGComponent):
     '''
@@ -216,7 +231,11 @@ class DatePickerComp(DPGComponent):
         self._date_picker_window_tag    = dpg.generate_uuid()
         self._date_picker               = dpg.generate_uuid()
 
+        use_icon(ICO_CALENDAR)
+
         self.show()
+    
+   
    
     def delete(self, children_only: bool =False, **kwargs):
         if dpg.does_item_exist(self._group_tag):
@@ -265,7 +284,7 @@ class DatePickerComp(DPGComponent):
                                         default_value={'month_day': 8, 'year':93, 'month':5}, callback=self.on_value_selected)
             
                 dpg.add_input_text(tag = self._text_box_tag, enabled = False, width=80)
-                dpg.add_button(label='+', callback=self.show_date_picker)
+                dpg.add_image_button(ICO_CALENDAR, callback=self.show_date_picker)
 
             if self._parent:
                 dpg.move_item(self._group_tag, parent=self._parent)
@@ -282,8 +301,8 @@ class TextBoxComp(DPGComponent):
         self._text_box_tag              = dpg.generate_uuid()
       
         self.show()
-      
-
+    
+    
     def delete(self, children_only: bool =False, **kwargs):
         if dpg.does_item_exist(self._group_tag):
             dpg.delete_item(self._group_tag, children_only=children_only, **kwargs)
@@ -324,8 +343,8 @@ class DataGridComp(DPGComponent):
         self._group_tag                 = dpg.generate_uuid()
         self._table_tag                 = dpg.generate_uuid()
         self.show()
-      
 
+    
     def delete(self, children_only: bool =False, **kwargs):
         if dpg.does_item_exist(self._group_tag):
             dpg.delete_item(self._group_tag, children_only=children_only, **kwargs)
@@ -346,6 +365,42 @@ class DataGridComp(DPGComponent):
            Use the table API to render the Data Grid.
         '''
 
+            
+        def sort_callback(sender, sort_specs):
+
+            # sort_specs scenarios:
+            #   1. no sorting -> sort_specs == None
+            #   2. single sorting -> sort_specs == [[column_id, direction]]
+            #   3. multi sorting -> sort_specs == [[column_id, direction], [column_id, direction], ...]
+            #
+            # notes:
+            #   1. direction is ascending if == 1
+            #   2. direction is ascending if == -1
+
+            # no sorting case
+            if sort_specs is None: return
+
+            rows = dpg.get_item_children(sender, 1)
+
+            # create a list that can be sorted based on first cell
+            # value, keeping track of row and value used to sort
+            sortable_list = []
+            for row in rows:
+                first_cell = dpg.get_item_children(row, 1)[0]
+                sortable_list.append([row, dpg.get_value(first_cell)])
+
+            def _sorter(e):
+                return e[1]
+
+            sortable_list.sort(key=_sorter, reverse=sort_specs[0][1] < 0)
+
+            # create list of just sorted row ids
+            new_order = []
+            for pair in sortable_list:
+                new_order.append(pair[0])
+                            
+            dpg.reorder_items(sender, 1, new_order)
+
         def _delete_table():
             if dpg.does_item_exist(self._table_tag):
                 dpg.delete_item(self._table_tag)
@@ -357,7 +412,7 @@ class DataGridComp(DPGComponent):
             # Create a group at the root level
             with dpg.group(tag=self._group_tag, show=self._configuration['show']):
 
-                with dpg.table(tag=self._table_tag, header_row=True, borders_innerH=True, 
+                with dpg.table(tag=self._table_tag, header_row=True, borders_innerH=True, sortable=True, callback=sort_callback,
                                borders_outerH=True, borders_innerV=True, borders_outerV=True):
                     
                     _data = dpg.get_value(self._tag)
@@ -366,9 +421,8 @@ class DataGridComp(DPGComponent):
                             dpg.add_table_column(label=c)
                         for index, row in _data.iterrows():
                             with dpg.table_row():
-                                for c in _data.columns:                                      
-                                    with dpg.table_cell():
-                                        dpg.add_text(default_value=row[c])
+                                for c in _data.columns:
+                                     dpg.add_text(default_value=row[c])
 
             if self._parent:
                 dpg.move_item(self._group_tag, parent=self._parent)

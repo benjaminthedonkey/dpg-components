@@ -4,6 +4,7 @@ import dpg_components
 import dearpygui.dearpygui as dpg
 
 
+
 dpg.create_context()
 dpg.create_viewport()
 dpg.setup_dearpygui()
@@ -18,7 +19,7 @@ with dpg.window(label="Example Components Window", on_close=_on_demo_close, widt
     
     with dpg.tree_node(label="Date picker"):
 
-        dpg.add_component('dpg_components','DatePickerComp',tag=f'date_picker_1')
+        dpg.add_component(dpg_components.DatePickerComp, tag=f'date_picker_1')
 
         # Set default date to today
         dpg.configure_item(f'date_picker_1', default_value = datetime.now().date())
@@ -26,12 +27,12 @@ with dpg.window(label="Example Components Window", on_close=_on_demo_close, widt
         dpg.add_text("Add another component with the same source as DatePicker")
     
         # Add another component with the same source as Date picker
-        dpg.add_component('dpg_components','TextBoxComp',tag='text_box_1', source='date_picker_1')
+        dpg.add_component(dpg_components.TextBoxComp, tag='text_box_1', source='date_picker_1')
     
     with dpg.tree_node(label="Data Grid"):
 
         # Add Data Grid component
-        dpg.add_component('dpg_components','DataGridComp',tag=f'data_grid_1')
+        dpg.add_component(dpg_components.DataGridComp, tag=f'data_grid_1')
         
         data = {
             'Name': ['Alice', 'Bob', 'Charlie'],
