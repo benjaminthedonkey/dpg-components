@@ -20,5 +20,5 @@ import dearpygui.dearpygui as dpg
 
 First, create a new class and implement abstract class "DPGComponent". Then you can use your new component as follows:   
 ```python 
-  dpg.add_component('my_components_module','MyNewComponent',tag=f'com_1')
+  dpg.add_component(dpg_components.DatePickerComp ,tag=f'com_1')
 ```
