@@ -9,7 +9,7 @@ The goal of this project is to bring Components to [DearPyGui](https://github.co
  - Reusability is achieved through composition.
 
 ### How it works ?
-Import module dpg_components before you import [DearPyGui](https://github.com/hoffstadt/DearPyGui). 
+Import module dpg_components, then you can call method add_component as follows:
 
 ```python 
 import dpg_components
