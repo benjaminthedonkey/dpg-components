@@ -236,7 +236,6 @@ class DatePickerComp(DPGComponent):
         self.show()
     
    
-   
     def delete(self, children_only: bool =False, **kwargs):
         if dpg.does_item_exist(self._group_tag):
             dpg.delete_item(self._group_tag, children_only=children_only, **kwargs)
