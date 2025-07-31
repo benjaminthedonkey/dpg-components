@@ -221,6 +221,11 @@ class ManagedWindow(DPGComponent):
         A managed window can have state and configuration persisted in between session.
         dpg.save_current_sate
      '''
+     def __init__(self, tag = 0, parent = 0):
+
+        super().__init__(tag, parent)
+
+        self.show()
 
 class DatePickerComp(DPGComponent):
     '''
