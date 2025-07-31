@@ -23,13 +23,10 @@ with dpg.window(label="Example Components Window", on_close=_on_demo_close, widt
         # Set default date to today
         dpg.configure_item(f'date_picker_1', default_value = datetime.now().date())
 
-        dpg.add_text("Add another component with the same source as DatePicker")
-    
-        # Add another component with the same source as Date picker
-        dpg.add_component(dpg_components.TextBoxComp, tag='text_box_1', source='date_picker_1')
     
     with dpg.tree_node(label="Data Grid"):
 
+        dpg.add_text(default_value="Render a Pandas Data Frame to the GUI", show_label=False)
         # Add Data Grid component
         dpg.add_component(dpg_components.DataGridComp, tag=f'data_grid_1')
         

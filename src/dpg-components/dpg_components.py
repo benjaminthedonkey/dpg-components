@@ -213,8 +213,14 @@ class DPGComponent(ABC):
 
 
 ###########################################################################
-#  Example Components
+#  Components
 ###########################################################################
+
+class ManagedWindow(DPGComponent):
+     '''
+        A managed window can have state and configuration persisted in between session.
+        dpg.save_current_sate
+     '''
 
 class DatePickerComp(DPGComponent):
     '''
