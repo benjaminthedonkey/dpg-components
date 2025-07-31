@@ -1,8 +1,7 @@
 from datetime import datetime
 import pandas as pd
-import dpg_components
+import DPGComponents
 import dearpygui.dearpygui as dpg
-
 
 dpg.create_context()
 dpg.create_viewport()
@@ -18,7 +17,7 @@ with dpg.window(label="Example Components Window", on_close=_on_demo_close, widt
     
     with dpg.tree_node(label="Date picker"):
 
-        dpg.add_component(dpg_components.DatePickerComp, tag=f'date_picker_1')
+        dpg.add_component(DPGComponents.DatePickerComp, tag=f'date_picker_1')
 
         # Set default date to today
         dpg.configure_item(f'date_picker_1', default_value = datetime.now().date())
@@ -28,7 +27,7 @@ with dpg.window(label="Example Components Window", on_close=_on_demo_close, widt
 
         dpg.add_text(default_value="Render a Pandas Data Frame to the GUI", show_label=False)
         # Add Data Grid component
-        dpg.add_component(dpg_components.DataGridComp, tag=f'data_grid_1')
+        dpg.add_component(DPGComponents.DataGridComp, tag=f'data_grid_1')
         
         data = {
             'Name': ['Alice', 'Bob', 'Charlie'],
