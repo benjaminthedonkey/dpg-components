@@ -9,13 +9,13 @@ The goal of this project is to bring Components to [DearPyGui](https://github.co
  - Reusability is achieved through composition.
 
 ### How it works ?
-Import module dpg_components, then you can interact with DPG as normal and also call the method "add_component" to add
+Copy file DPGComponents.py into your project, then after import, you can interact with DPG as normal and also call the method "add_component" to add
 complex components to your project. You can also define your own components by implementing abstract class "DPGComponent".
 
 ```python 
 from datetime import datetime
-import dpg_components
 import dearpygui.dearpygui as dpg
+import DPGComponents
 
 def save_callback():
     print("Save Clicked")
