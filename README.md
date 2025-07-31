@@ -21,7 +21,6 @@ complex components to your project. You can also define your own components by i
 ```python 
 from datetime import datetime
 import dearpygui.dearpygui as dpg
-import DPGComponents
 import DPGComponents.DPGComponents as comps
 import pandas as pd
 
