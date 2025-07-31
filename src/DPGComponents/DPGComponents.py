@@ -5,6 +5,8 @@ import dearpygui._dearpygui as internal_dpg
 from abc import ABC, abstractmethod
 from datetime import date
 import os
+import importlib.resources
+
 
 # ICONS
 ICO_CALENDAR    = 'ico_calendar_14'
@@ -18,11 +20,12 @@ def use_icon(icon_name : str):
         Register icons for future user
      '''
      if  not dpg.does_item_exist(icon_name):
-        fd_img_path = os.path.join(os.path.dirname(__file__), "images")
-        width, height, _, data = dpg.load_image(os.path.join(fd_img_path, ICO_FILE[icon_name]))
-        ico_ = [width, height, data]
-        with dpg.texture_registry():
-            dpg.add_static_texture(width=ico_[0], height=ico_[1], default_value=ico_[2], tag=icon_name)
+        if __package__ is not None:
+            with importlib.resources.path('DPGComponents.icons', ICO_FILE[icon_name]) as fd_img_path:
+                width, height, _, data = dpg.load_image(str(fd_img_path))
+                ico_ = [width, height, data]
+                with dpg.texture_registry():
+                    dpg.add_static_texture(width=ico_[0], height=ico_[1], default_value=ico_[2], tag=icon_name)
 
 
 class DPGComponent(ABC):
