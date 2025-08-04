@@ -60,3 +60,9 @@ dpg.start_dearpygui()
 dpg.destroy_context()
 ```
 
+### TODO
+- Support animation in components: https://github.com/mrtnRitter/DearPyGui_Animate
+- Shell 
+- Modules
+- Layout
+- Permission

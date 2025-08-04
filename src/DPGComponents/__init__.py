@@ -7,7 +7,6 @@ from datetime import date
 import os
 
 
-
 '''
 COM REGISTRY:
     COMP_ID(int,str) = {'comp_ref':CLASS_REF, 'source_id':ID}
@@ -15,36 +14,44 @@ COM REGISTRY:
 SOURCE REGISTRY:
     SOURCE_ID(int,str) = {'value':Any, 'comps':[ID..]}
 
+MODULE REGISTRY:
+    MODULE_ID(int,str) = {'key_words':[], 'comp_ref':CLASS_REF}
 '''
-# TODO Thread safe struct ?
+
 COM_REG     = dict() 
 SOURCE_REG  = dict()
+MODULE_REG	= dict()
+
+
+def register_module(cls : any , *args, **kwargs):
+	'''Create and register new Modules '''
+	
+	_module = create_instance(cls)
+
+
+def create_instance(cls, *args, **kwargs):
+	"""
+	Creates an instance of a class from its class.
+
+	Args:
+		cls (any): Class
+		*args: Positional arguments to pass to the class constructor.
+		**kwargs: Keyword arguments to pass to the class constructor.
+
+	Returns:
+		An instance of the class, or None if an error occurs.
+	"""
+	try:
+		instance = cls(*args, **kwargs)
+		return instance
+	except (ImportError, AttributeError, TypeError) as e:
+		print(f"Error creating instance of: {cls}")
+		raise e
+
 
 def add_component(cls : any, tag : Union[int, str] = None, parent : Union[int, str] = None , source : Union[int, str] = None, *args, **kwargs):
-    '''
-		Create and register new components
-    '''
-    def create_instance(cls, *args, **kwargs):
-        """
-        Creates an instance of a class from its class.
+    '''Create and register new components '''
 
-        Args:
-            cls (any): Class
-            *args: Positional arguments to pass to the class constructor.
-            **kwargs: Keyword arguments to pass to the class constructor.
-
-        Returns:
-            An instance of the class, or None if an error occurs.
-        """
-        try:
-            instance = cls(*args, **kwargs)
-            return instance
-        except (ImportError, AttributeError, TypeError) as e:
-            print(f"Error creating instance of: {cls}")
-            raise e
-
-
-    #_parent = parent if parent else dpg.last_item()
     _parent = parent
     _item =  tag if tag else dpg.generate_uuid()
     _source = source if source else _item
@@ -140,6 +147,7 @@ def configure_item(item : Union[int, str], **kwargs) -> None:
 		internal_dpg.configure_item(item, **kwargs)
 
 
+
 # Update global DPG module
 # --------------------------
 dpg.add_component = add_component
@@ -148,3 +156,4 @@ dpg.set_value = set_value
 dpg.delete_item = delete_item
 dpg.get_item_configuration = get_item_configuration
 dpg.configure_item = configure_item
+
